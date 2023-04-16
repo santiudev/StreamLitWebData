@@ -227,21 +227,23 @@ def style_function(feature):
         "fillOpacity": 0.7,
         "color": "black",
         "weight": 1,
-        "tooltip": f"{country}: {count} datos"
     }
 
 # Añadir capa GeoJSON al mapa
+for feature in geo_json_data["features"]:
+    country_name = feature["properties"]["name"]
+    feature["properties"]["count"] = country_data.get(country_name, 0)
+
 folium.GeoJson(
     geo_json_data,
     style_function=style_function,
     tooltip=folium.features.GeoJsonTooltip(
-        fields=["name"],
-        aliases=["País:"],
+        fields=["name", "count"],
+        aliases=["País:", "Datos:"],
         labels=True,
-        sticky=False,
+        sticky=False
     ),
 ).add_to(world_map)
-
 # Mostrar mapa en Streamlit
 
 # Crear layout de tabla y mapa uno al lado del otro
